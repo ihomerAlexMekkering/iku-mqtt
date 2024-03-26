@@ -1,0 +1,28 @@
+services:
+
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./config/mosquitto:/mosquitto/config
+
+  subscription-iku-all:
+    image: eclipse-mosquitto:latest
+    entrypoint: ["/usr/bin/mosquitto_sub", "-h", "mqtt-broker", "-v", "-t", "iku-mqtt-client/#"]
+    depends_on:
+      - mqtt-broker
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    privileged: true
+    environment:
+      - TZ=${TZ:-Europe/Amsterdam}
+    volumes:
+      - ./config/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    ports:
+      - "8123:8123"
+    depends_on:
+      - mqtt-broker

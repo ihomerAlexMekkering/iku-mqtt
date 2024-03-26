@@ -1,0 +1,10 @@
+# Pycharm ignores
+/.idea/
+/.venv/
+
+# Home Assistant ignores
+/config/homeassistant/
+
+# Gitignore settings for ESPHome
+/.esphome/
+/secrets.yaml
